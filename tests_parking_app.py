@@ -2,9 +2,8 @@ import select
 import time
 
 import pytest
-from _pytest.fixtures import fixture
 from selenium import webdriver
-
+from assertpy import assert_that
 from selenium.webdriver.support.ui import Select
 from helpers.parking_lots import ParkingLots
 
@@ -39,7 +38,20 @@ class TestParking:
         estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
         estimated_time = ParkingLots(self.driver).validate_estimated_time()
         assert estimated_parking_costs == '$ 12.00'
-        assert estimated_time == '        (0 Days, 5 Hours, 0 Minutes)'
+        assert_that(estimated_time).contains('(0 Days, 5 Hours, 0 Minutes')
+
+    def test_valet_parking_cost_in_more_than_5_hours(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Valet')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/02/2021', '6:01')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 18.00'
+        assert_that(estimated_time).contains('(0 Days, 5 Hours, 1 Minutes')
+
+
 
     def test_verify_dropdown(self):
         opciones = self.driver.find_element_by_id('ParkingLot')
