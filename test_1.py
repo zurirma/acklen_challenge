@@ -13,6 +13,10 @@ class Test_Parking:
         self.driver.get('http://www.shino.de/parkcalc/')
         self.driver.maximize_window()
 
+    def test_verify_title_app(self):
+        title = self.driver.find_element_by_class_name('PageTitle').text
+        assert title == 'PARKING COST CALCULATOR'
+
     def test_verify_dropdown(self):
         opciones = self.driver.find_element_by_id('ParkingLot')
         seleccionar = Select(opciones)
