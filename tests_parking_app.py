@@ -51,6 +51,62 @@ class TestParking:
         assert estimated_parking_costs == '$ 18.00'
         assert_that(estimated_time).contains('(0 Days, 5 Hours, 1 Minutes')
 
+    def test_short_term_parking_cost_between_the_first_hour(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Short')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/02/2021', '1:59')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 2.00'
+        assert_that(estimated_time).contains('(0 Days, 0 Hours, 59 Minutes')
+
+    def test_short_term_parking_cost_in_an_hour_and_a_half(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Short')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/02/2021', '2:30')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 2.00'
+        assert_that(estimated_time).contains('(0 Days, 1 Hours, 30 Minutes')
+
+    def test_short_term_parking_cost_in_and_hour_and_thirty_one_minutes(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Short')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/02/2021', '2:31')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 4.00'
+        assert_that(estimated_time).contains('(0 Days, 1 Hours, 31 Minutes')
+
+    def test_short_term_parking_cost_for_one_day_and_one_minute(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Short')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/03/2021', '1:01')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 25.00'
+        assert_that(estimated_time).contains('(1 Days, 0 Hours, 1 Minutes')
+
+    def test_short_term_parking_for_two_days_and_one_minute(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Short')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/04/2021', '1:01')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 49.00'
+        assert_that(estimated_time).contains('(2 Days, 0 Hours, 1 Minutes')
+
+
 
 
     def test_verify_dropdown(self):
