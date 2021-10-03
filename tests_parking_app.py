@@ -4,7 +4,7 @@ import time
 import pytest
 from _pytest.fixtures import fixture
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+
 from selenium.webdriver.support.ui import Select
 from helpers.parking_lots import ParkingLots
 
@@ -36,10 +36,8 @@ class TestParking:
         select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
         select_parking_lot_and_dates.input_leaving_date_time('10/02/2021', '6:00')
         time.sleep(5)
-        self.driver.find_element_by_name('Submit').click()
-        estimated_parking_costs = self.driver.find_element_by_xpath(
-            '/html/body/form/table/tbody/tr[4]/td[2]/span[1]').text
-        estimated_time = self.driver.find_element_by_xpath('/html/body/form/table/tbody/tr[4]/td[2]/span[2]').text
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
         assert estimated_parking_costs == '$ 12.00'
         assert estimated_time == '        (0 Days, 5 Hours, 0 Minutes)'
 
