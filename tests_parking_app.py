@@ -106,6 +106,72 @@ class TestParking:
         assert estimated_parking_costs == '$ 49.00'
         assert_that(estimated_time).contains('(2 Days, 0 Hours, 1 Minutes')
 
+    def test_economy_lot_parking_cost_for_one_hour(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Economy')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/02/2021', '2:00')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 2.00'
+        assert_that(estimated_time).contains('(0 Days, 1 Hours, 0 Minutes')
+
+    def test_economy_lot_parking_cost_for_one_day(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Economy')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/03/2021', '1:00')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 9.00'
+        assert_that(estimated_time).contains('(1 Days, 0 Hours, 0 Minutes')
+
+    def test_economy_lot_parking_cost_for_one_day_and_one_minute(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Economy')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/03/2021', '1:01')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 11.00'
+        assert_that(estimated_time).contains('(1 Days, 0 Hours, 1 Minutes')
+
+    def test_economy_lot_parking_cost_for_six_days_and_23_hours(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Economy')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/08/2021', '12:59')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 54.00'
+        assert_that(estimated_time).contains('(5 Days, 23 Hours, 59 Minutes')
+
+    def test_economy_lot_parking_cost_for_eight_days_sixty_one_minutes(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Economy')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/10/2021', '2:01')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 67.00'
+        assert_that(estimated_time).contains('(8 Days, 1 Hours, 1 Minutes')
+
+    def test_economy_lot_parking_cost_for_fourteen_day(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Economy')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/16/2021', '1:00')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 108.00'
+        assert_that(estimated_time).contains('(14 Days, 0 Hours, 0 Minutes')
+
 
 
 
