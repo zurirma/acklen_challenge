@@ -205,17 +205,38 @@ class TestParking:
         assert estimated_parking_costs == '$ 74.00'
         assert_that(estimated_time).contains('(7 Days, 0 Hours, 1 Minutes')
 
+    def test_long_term_surface_parking_cost_for_one_hour_and_one_minute(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Long-Surface')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/02/2021', '2:01')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 4.00'
+        assert_that(estimated_time).contains('(0 Days, 1 Hours, 1 Minutes')
 
+    def test_long_term_surface_parking_cost_for_one_day_and_one_minute(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Long-Surface')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/03/2021', '1:01')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 12.00'
+        assert_that(estimated_time).contains('(1 Days, 0 Hours, 1 Minutes')
 
-
-
-
-    def test_verify_dropdown(self):
-        opciones = self.driver.find_element_by_id('ParkingLot')
-        seleccionar = Select(opciones)
-        seleccionar.select_by_value('Short')
-        assert opciones.get_attribute('name') == 'ParkingLot'
-        print('Test completed')
+    def test_long_term_surface_parking_cost_for_fourteen_days(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Long-Surface')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/16/2021', '1:00')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 120.00'
+        assert_that(estimated_time).contains('(14 Days, 0 Hours, 0 Minutes')
 
     def teardown(self):
         self.driver.close()
