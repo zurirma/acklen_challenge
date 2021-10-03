@@ -21,3 +21,7 @@ class Test_Parking:
         self.driver.close()
         self.driver.quit()
         print('Test completed')
+
+    def tear_down(self):
+        self.driver.close()
+        self.driver.quit()
