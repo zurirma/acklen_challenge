@@ -255,6 +255,19 @@ class TestParking:
         assert estimated_parking_costs == '$ 120.00'
         assert_that(estimated_time).contains('(14 Days, 0 Hours, 0 Minutes')
 
+    def test_leaving_date_is_previous_to_entry_date_for_one_day(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Long-Surface')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/01/2021', '1:00')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        estimated_time = ParkingLots(self.driver).validate_estimated_time()
+        assert estimated_parking_costs == '$ 0.00'
+        assert_that(estimated_time).does_not_contain('(-1 Days, 0 Hours, 0 Minutes)')
+
+
+
     def teardown(self):
         self.driver.close()
         self.driver.quit()
