@@ -320,11 +320,6 @@ class TestParking:
         estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
         assert estimated_parking_costs == '$ 0.00'
 
-
-
-
-
-
     def teardown(self):
         self.driver.close()
         self.driver.quit()
