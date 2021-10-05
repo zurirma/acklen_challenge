@@ -255,6 +255,7 @@ class TestParking:
         assert estimated_parking_costs == '$ 120.00'
         assert_that(estimated_time).contains('(14 Days, 0 Hours, 0 Minutes')
 
+    @pytest.mark.date_time_format
     def test_leaving_date_is_previous_to_entry_date_for_one_day(self):
         select_parking_lot_and_dates = ParkingLots(self.driver)
         select_parking_lot_and_dates.select_parking_lot('Long-Surface')
@@ -266,6 +267,7 @@ class TestParking:
         assert estimated_parking_costs == '$ 0.00'
         assert_that(estimated_time).does_not_contain('(-1 Days, 0 Hours, 0 Minutes)')
 
+    @pytest.mark.date_time_format
     def test_leaving_date_is_previous_to_entry_date_for_a_year(self):
         select_parking_lot_and_dates = ParkingLots(self.driver)
         select_parking_lot_and_dates.select_parking_lot('Long-Garage')
@@ -276,6 +278,7 @@ class TestParking:
         assert_that(estimated_parking_costs).contains('ERROR! Your Leaving Date Or Time Is Before Your Starting Date or'
                                                       ' Time')
 
+    @pytest.mark.date_time_format
     def test_leaving_date_is_previous_to_entry_date_for_a_month(self):
         select_parking_lot_and_dates = ParkingLots(self.driver)
         select_parking_lot_and_dates.select_parking_lot('Long-Garage')
@@ -286,6 +289,7 @@ class TestParking:
         assert_that(estimated_parking_costs).contains('ERROR! Your Leaving Date Or Time Is Before Your Starting Date or'
                                                       ' Time')
 
+    @pytest.mark.date_time_format
     def test_leaving_date_with_wrong_day_format(self):
         select_parking_lot_and_dates = ParkingLots(self.driver)
         select_parking_lot_and_dates.select_parking_lot('Valet')
@@ -295,6 +299,8 @@ class TestParking:
         estimated_parking_costs = (By.LINK_TEXT, 'ERROR! Your Leaving Date Or Time Is Before Your Starting Date or Time')
         assert_that(estimated_parking_costs).contains('ERROR! Your Leaving Date Or Time Is Before Your Starting Date or'
                                                       ' Time')
+
+    @pytest.mark.date_time_format
     def test_leaving_date_with_wrong_month_format(self):
         select_parking_lot_and_dates = ParkingLots(self.driver)
         select_parking_lot_and_dates.select_parking_lot('Valet')
@@ -304,6 +310,7 @@ class TestParking:
         estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
         assert estimated_parking_costs == '$ 0.00'
 
+    @pytest.mark.date_time_format
     def test_leaving_time_is_out_of_format(self):
         select_parking_lot_and_dates = ParkingLots(self.driver)
         select_parking_lot_and_dates.select_parking_lot('Valet')
