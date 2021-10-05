@@ -3,7 +3,7 @@ import allure
 import pytest
 from assertpy import assert_that
 from selenium import webdriver
-
+from selenium.webdriver.common.by import By
 from helpers.parking_lots import ParkingLots
 
 pytestmark = [
@@ -272,8 +272,46 @@ class TestParking:
         select_parking_lot_and_dates.input_entry_date_time('10/02/2022', '1:00')
         select_parking_lot_and_dates.input_leaving_date_time('10/03/2021', '1:00')
         time.sleep(5)
-        estimated_parking_costs = self.driver.find_element_by_class_name('Subhead').text
-        assert_that(estimated_parking_costs).does_not_contain('(-1 Days, 0 Hours, 0 Minutes)')
+        estimated_parking_costs = (By.LINK_TEXT, 'ERROR! Your Leaving Date Or Time Is Before Your Starting Date or Time')
+        assert_that(estimated_parking_costs).contains('ERROR! Your Leaving Date Or Time Is Before Your Starting Date or'
+                                                      ' Time')
+
+    def test_leaving_date_is_previous_to_entry_date_for_a_month(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Long-Garage')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/01/2021', '1:00')
+        time.sleep(5)
+        estimated_parking_costs = (By.LINK_TEXT, 'ERROR! Your Leaving Date Or Time Is Before Your Starting Date or Time')
+        assert_that(estimated_parking_costs).contains('ERROR! Your Leaving Date Or Time Is Before Your Starting Date or'
+                                                      ' Time')
+
+    def test_leaving_date_with_wrong_day_format(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Valet')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/32/2021', '1:00')
+        time.sleep(5)
+        estimated_parking_costs = (By.LINK_TEXT, 'ERROR! Your Leaving Date Or Time Is Before Your Starting Date or Time')
+        assert_that(estimated_parking_costs).contains('ERROR! Your Leaving Date Or Time Is Before Your Starting Date or'
+                                                      ' Time')
+    def test_leaving_date_with_wrong_month_format(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Valet')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('23/03/2021', '1:00')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        assert estimated_parking_costs == '$ 0.00'
+
+    def test_leaving_time_is_out_of_format(self):
+        select_parking_lot_and_dates = ParkingLots(self.driver)
+        select_parking_lot_and_dates.select_parking_lot('Valet')
+        select_parking_lot_and_dates.input_entry_date_time('10/02/2021', '1:00')
+        select_parking_lot_and_dates.input_leaving_date_time('10/03/2021', '36:00')
+        time.sleep(5)
+        estimated_parking_costs = ParkingLots(self.driver).calculate_parking_costs()
+        assert estimated_parking_costs == '$ 0.00'
 
 
 
